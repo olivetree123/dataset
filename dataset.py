@@ -149,16 +149,13 @@ class Dataset(object):
                               label_name=self.schema.label_name)
         new_dataset.schema = schema
         new_dataset._write_columns()
-        counter = 0
         while True:
-            counter += 1
             data = q.get(block=True)
             if not data:
                 break
             inst, filter_status = data[0], data[1]
             rows.append(inst.to_csv())
             if len(rows) >= 10000:
-                print(f"write rows, i={counter}")
                 new_dataset._write_rows(rows)
                 rows = []
         new_dataset._write_rows(rows)
@@ -207,7 +204,6 @@ class Dataset(object):
                     continue
                 rows.append(inst.to_csv())
                 if len(rows) >= 10000:
-                    print(f"write rows, i={counter}")
                     new_dataset._write_rows(rows)
                     rows = []
             new_dataset._write_rows(rows)
